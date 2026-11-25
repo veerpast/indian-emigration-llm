@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it using this metadata."
+title: "Fine-Tuning Open-Source LLMs for Indian Emigration Question Answering"
+type: software
+authors:
+  - family-names: Tomar
+    given-names: Veerpratap Singh
+    orcid: ""
+  - family-names: Singh
+    given-names: Piyush Pratap
+version: 1.0.0
+date-released: 2026-11-25
+repository-code: "https://github.com/veerpast/indian-emigration-llm"
+license: MIT
+keywords:
+  - large language models
+  - LoRA
+  - GGUF
+  - Indian emigration
+  - visa question answering
+

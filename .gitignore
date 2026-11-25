@@ -1,0 +1,32 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Trained weights are intentionally hosted outside Git.
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.gguf
+
+# The full corpus is kept local until source rights/consent are verified.
+indian_emigration_qa_purified.csv
+data/raw/
+data/processed/
+
+# Local/site tooling
+site-package.tar.gz
+.playwright-cli/
+output/
+
+# Notebook checkpoints and generated reports
+.ipynb_checkpoints/
+reports/*.json
+

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A research pipeline for fine-tuning and quantizing open-source language models for Indian emigration question answering.">
+  <meta name="theme-color" content="#0b1f33">
+  <title>Indian Emigration LLM Research</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="wordmark" href="#top" aria-label="Indian Emigration LLM home">
+      <span class="wordmark-mark" aria-hidden="true">IE</span>
+      <span>Emigration LLM Lab</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#pipeline">Pipeline</a>
+      <a href="#models">Models</a>
+      <a href="#corpus">Corpus</a>
+      <a href="#evaluation">Evaluation</a>
+    </nav>
+    <button class="present-button" id="presentButton" type="button">Present</button>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" data-slide>
+      <div class="hero-copy">
+        <p class="kicker">Adamas University · Final-year research</p>
+        <h1>Three open models. One Indian emigration corpus.</h1>
+        <p class="hero-lede">A reproducible route from 30,324 Indian emigration Q&amp;A pairs to LoRA adapters, quantized GGUF artifacts, and streaming inference—built across college HPC and Google Colab.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://colab.research.google.com/github/veerpast/indian-emigration-llm/blob/main/notebooks/Final_LLM_Pipeline.ipynb" target="_blank" rel="noreferrer">Run in Colab</a>
+          <a class="button secondary" href="https://github.com/veerpast/indian-emigration-llm" target="_blank" rel="noreferrer">Read the repository</a>
+        </div>
+        <p class="authors">Veerpratap Singh Tomar &amp; Piyush Pratap Singh<br><span>Project coordinator: Dr. Tamal Ghosh</span></p>
+      </div>
+
+      <div class="route-panel" aria-label="Research pipeline overview">
+        <svg class="route-map" viewBox="0 0 620 600" role="img" aria-labelledby="routeTitle routeDesc">
+          <title id="routeTitle">Route from corpus to deployment</title>
+          <desc id="routeDesc">Five connected research stages: corpus, HPC training, adapters, Colab quantization, and live inference.</desc>
+          <path class="route-shadow" d="M74 92 C220 92 151 230 308 230 S420 354 540 354 S430 510 288 510"/>
+          <path class="route-line" d="M74 92 C220 92 151 230 308 230 S420 354 540 354 S430 510 288 510"/>
+          <g class="route-stop" transform="translate(74 92)">
+            <circle r="19"/><circle class="inner" r="7"/>
+            <text x="34" y="-6">30,324 rows</text><text class="route-note" x="34" y="17">Reddit-derived corpus</text>
+          </g>
+          <g class="route-stop" transform="translate(308 230)">
+            <circle r="19"/><circle class="inner" r="7"/>
+            <text x="34" y="-6">College HPC</text><text class="route-note" x="34" y="17">LoRA fine-tuning</text>
+          </g>
+          <g class="route-stop" transform="translate(540 354)">
+            <circle r="19"/><circle class="inner" r="7"/>
+            <text x="-190" y="-6">3 adapters</text><text class="route-note" x="-190" y="17">parameter-efficient</text>
+          </g>
+          <g class="route-stop" transform="translate(288 510)">
+            <circle r="19"/><circle class="inner" r="7"/>
+            <text x="34" y="-6">18.31 GB</text><text class="route-note" x="34" y="17">quantized artifacts</text>
+          </g>
+        </svg>
+        <div class="route-caption"><span>Research route</span><strong>HPC → Colab → llama.cpp</strong></div>
+      </div>
+    </section>
+
+    <section class="proof-strip" aria-label="Verified project facts">
+      <div><strong>30,324</strong><span>Q&amp;A pairs</span></div>
+      <div><strong>3 / 6</strong><span>models verified</span></div>
+      <div><strong>Q4_K_M</strong><span>GGUF quantization</span></div>
+      <div><strong>25 Nov 2026</strong><span>artifact audit</span></div>
+    </section>
+
+    <section class="section pipeline" id="pipeline" data-slide>
+      <div class="section-heading">
+        <p class="kicker">The engineering route</p>
+        <h2>Each constraint shaped the system.</h2>
+        <p>HPC handled adaptation. Colab handled merging and quantization. The local machine only needs a browser.</p>
+      </div>
+      <ol class="pipeline-list">
+        <li>
+          <span class="stage">Source</span>
+          <div><h3>Scrape, clean, and audit</h3><p>Collect approved Reddit data, pre-process it, scan identifiers, deduplicate, and freeze leakage-controlled splits.</p></div>
+          <span class="stage-output">CSV + manifest</span>
+        </li>
+        <li>
+          <span class="stage">Train</span>
+          <div><h3>Adapt on college HPC</h3><p>Apply LoRA to attention and MLP projections instead of updating every base-model parameter.</p></div>
+          <span class="stage-output">PEFT adapters</span>
+        </li>
+        <li>
+          <span class="stage">Merge</span>
+          <div><h3>Stream one shard at a time</h3><p>Fuse <em>W + (α/r)BA</em>, save the shard, release memory, and continue.</p></div>
+          <span class="stage-output">Merged HF weights</span>
+        </li>
+        <li>
+          <span class="stage">Compress</span>
+          <div><h3>Quantize in Colab</h3><p>Convert through FP16 GGUF, then produce Q4_K_M files stored on Drive.</p></div>
+          <span class="stage-output">4.37–9.00 GB</span>
+        </li>
+        <li>
+          <span class="stage">Serve</span>
+          <div><h3>Stream every token</h3><p>Keep one model resident in llama-server and send OpenAI-compatible SSE to Gradio.</p></div>
+          <span class="stage-output">Live evaluation</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section models" id="models" data-slide>
+      <div class="section-heading compact">
+        <p class="kicker">Verified artifacts</p>
+        <h2>Three model families, one deployment format.</h2>
+      </div>
+      <div class="model-workbench">
+        <div class="model-tabs" role="tablist" aria-label="Model selection">
+          <button role="tab" aria-selected="true" aria-controls="modelPanel" data-model="mistral">Mistral 7B</button>
+          <button role="tab" aria-selected="false" aria-controls="modelPanel" data-model="granite">Granite 8B</button>
+          <button role="tab" aria-selected="false" aria-controls="modelPanel" data-model="qwen">Qwen3 14B</button>
+        </div>
+        <div class="model-panel" id="modelPanel" role="tabpanel" aria-live="polite">
+          <div class="artifact-mass">
+            <span id="modelSize">4.37</span>
+            <small>GB · Q4_K_M</small>
+          </div>
+          <div class="model-detail">
+            <h3 id="modelName">Mistral 7B Instruct v0.3</h3>
+            <p id="modelRepo">mistralai/Mistral-7B-Instruct-v0.3</p>
+            <dl>
+              <div><dt>LoRA rank</dt><dd id="modelRank">64</dd></div>
+              <div><dt>Alpha</dt><dd id="modelAlpha">128</dd></div>
+              <div><dt>Dropout</dt><dd id="modelDropout">0.05</dd></div>
+              <div><dt>Recipe</dt><dd id="modelRecipe">3 epochs · lr 1e-4*</dd></div>
+            </dl>
+            <p class="evidence-note" id="modelNote">*Optimizer recipe is reported in the project log; no Mistral run_config.json is present.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section corpus" id="corpus" data-slide>
+      <div class="section-heading">
+        <p class="kicker">Corpus composition</p>
+        <h2>All rows came from Reddit. The labels describe themes.</h2>
+        <p>The 30,324 scraped rows were cleaned and pre-processed into seven categories. The CSV column is named <code>source</code>, but its values are derived category labels—not separate acquisition origins.</p>
+      </div>
+      <div class="corpus-layout">
+        <div class="source-bars" aria-label="Dataset category distribution">
+          <div style="--share:59.14%"><span>Student visa interview experiences</span><b>17,934</b><i></i></div>
+          <div style="--share:25.77%"><span>Complete consular debriefs</span><b>7,813</b><i></i></div>
+          <div style="--share:9.54%"><span>Legal and regulatory Q&amp;A</span><b>2,894</b><i></i></div>
+          <div style="--share:2.45%"><span>Reddit travel and relocation</span><b>742</b><i></i></div>
+          <div style="--share:2.29%"><span>Study-abroad advisory corpus</span><b>693</b><i></i></div>
+          <div style="--share:.82%"><span>Other verified labels</span><b>248</b><i></i></div>
+        </div>
+        <aside class="integrity-callout">
+          <span class="stamp">Release gate</span>
+          <h3>The full corpus is not public yet.</h3>
+          <p>Row-level provenance, rightsholder permissions, privacy review, and takedown handling must be complete before redistribution.</p>
+          <a href="https://github.com/veerpast/indian-emigration-llm/blob/main/docs/DATA_CARD.md" target="_blank" rel="noreferrer">Read the dataset card</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section question-desk" id="demo" data-slide>
+      <div class="section-heading compact">
+        <p class="kicker">Presentation walkthrough</p>
+        <h2>Ask a representative question.</h2>
+        <p>This browser-only walkthrough uses authored example answers. It is not a live model and does not provide legal advice.</p>
+      </div>
+      <div class="demo-shell">
+        <div class="prompt-list" role="list" aria-label="Example questions">
+          <button type="button" data-prompt="ecr">What is the difference between ECR and ECNR?</button>
+          <button type="button" data-prompt="interview">How should a student explain their university choice?</button>
+          <button type="button" data-prompt="documents">What financial documents may a student be asked for?</button>
+        </div>
+        <article class="answer-paper" aria-live="polite">
+          <div class="answer-meta"><span>Illustrative answer</span><span id="answerTopic">Passport status</span></div>
+          <h3 id="answerQuestion">What is the difference between ECR and ECNR?</h3>
+          <p id="answerText">ECR and ECNR are passport emigration-status categories used in specific Indian emigration contexts. The correct status and any clearance requirement depend on the passport holder, destination, and current official rules. Verify the passport endorsement and consult the latest Passport Seva and Protector General of Emigrants guidance before travel.</p>
+          <div class="answer-warning">Verify against current official government sources.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section evaluation" id="evaluation" data-slide>
+      <div class="section-heading">
+        <p class="kicker">The paper-quality benchmark</p>
+        <h2>Engineering is complete enough to test. Comparison still needs evidence.</h2>
+      </div>
+      <div class="evaluation-grid">
+        <div class="eval-axis"><span>01</span><h3>Freeze the test set</h3><p>Deduplicate before splitting and group related source threads to prevent leakage.</p></div>
+        <div class="eval-axis"><span>02</span><h3>Compare against bases</h3><p>Use identical prompts and generation settings for base and fine-tuned checkpoints.</p></div>
+        <div class="eval-axis"><span>03</span><h3>Rate what matters</h3><p>Blind human review for correctness, relevance, completeness, and unsupported claims.</p></div>
+        <div class="eval-axis"><span>04</span><h3>Report uncertainty</h3><p>Publish category results, confidence intervals, agreement, latency, RAM, and errors.</p></div>
+      </div>
+      <div class="claim-boundary">
+        <div><strong>Supported today</strong><p>Artifacts, configurations, corpus structure, conversion path, streaming runtime.</p></div>
+        <div><strong>Needs benchmark evidence</strong><p>Quality ranking, improvement over base models, regulatory correctness, generalization.</p></div>
+      </div>
+    </section>
+
+    <section class="closing" data-slide>
+      <p class="kicker">Open research record</p>
+      <h2>Inspect the pipeline. Reproduce the artifacts. Challenge the claims.</h2>
+      <div class="hero-actions">
+        <a class="button primary" href="https://github.com/veerpast/indian-emigration-llm" target="_blank" rel="noreferrer">Open GitHub</a>
+        <a class="button secondary" href="https://drive.google.com/drive/folders/1kypaQhJfw3-65aerFxr4GMpn0wzMKWtG" target="_blank" rel="noreferrer">View model artifacts</a>
+      </div>
+      <p class="closing-note">Academic research prototype · Not legal or immigration advice</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Veerpratap Singh Tomar &amp; Piyush Pratap Singh</p>
+    <p>Adamas University · CSE (AI &amp; ML)</p>
+  </footer>
+
+  <div class="presentation-controls" id="presentationControls" hidden>
+    <button type="button" id="previousSlide" aria-label="Previous section">Previous</button>
+    <span id="slideCounter" aria-live="polite">1 / 7</span>
+    <button type="button" id="nextSlide" aria-label="Next section">Next</button>
+    <button type="button" id="exitPresentation">Exit</button>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
+
