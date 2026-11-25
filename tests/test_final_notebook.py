@@ -21,7 +21,12 @@ def test_final_notebook_is_demo_only_and_cells_parse():
     assert "quantiz" not in "\n".join(all_code).lower()
     runner = all_code[-1]
     assert re.search(r'DEMO_SCRIPT_REF = "[0-9a-f]{40}"', runner)
-    assert "subprocess.run([sys.executable, str(DEMO_SCRIPT_PATH)], check=True)" in runner
+    assert "subprocess.Popen(" in runner
+    assert "start_new_session=True" in runner
+    assert "subprocess.run(" not in runner
+    assert "for _ in range(30):" in runner
+    assert "DEMO_PROCESS.poll()" in runner
+    assert r"gradio\.live" in runner
 
     for source in all_code:
         if source.startswith("%%bash"):

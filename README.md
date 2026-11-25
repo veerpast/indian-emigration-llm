@@ -44,9 +44,11 @@ The final runnable notebook is
    prompt. The first cell checks the exact three GGUF files in Drive.
 4. The second installs only `llama-server` and Gradio; it does not merge or
    quantize models.
-5. The final cell fetches the version-pinned demo launcher from this repository,
-   then opens a temporary `gradio.live` URL and loads one selected model at a
-   time.
+5. The final cell fetches the version-pinned launcher, starts Gradio in the
+   background, and prints the temporary `gradio.live` URL. The cell returns
+   once the link is ready; a model loads only after you select it in the UI.
+   The first response can take a minute or more while that model loads from
+   Drive.
 
 With a GPU, the interface offers Mistral 7B, Granite 3.3 8B, and Qwen3 14B in
 one dropdown. On CPU-only runtimes it hides Qwen3 14B to avoid likely memory

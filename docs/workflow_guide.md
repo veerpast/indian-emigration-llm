@@ -17,12 +17,15 @@ base models, merge adapters, or convert/quantize weights.
    - `Qwen3-14B-Finetuned-Q4_K_M.gguf`
 4. The next cell installs the inference runtime in the temporary Colab VM.
    It does not write to Drive or alter model files.
-5. The final cell starts the Gradio chat and prints a temporary `gradio.live`
-   URL. Select a model and send a question. Only one model is loaded at a time;
-   the first response after a model switch takes longer while it loads.
+5. The final cell starts Gradio in the background and prints a temporary
+   `gradio.live` URL once ready. The cell then returns. Select a model and send
+   a question to load it; only one model is loaded at a time. The first model
+   load may take a minute or more when reading from Drive.
 
 The final cell downloads the launcher from a fixed repository commit rather
-than embedding a second copy of the interface code in the notebook.
+than embedding a second copy of the interface code in the notebook. It keeps
+startup logs in `/content/launch_colab_demo.log`; rerunning the cell checks the
+same process instead of starting a duplicate server.
 
 ## Free-runtime notes
 
@@ -42,6 +45,9 @@ enter personal or confidential information, and stop the runtime after use.
   later when Colab offers a free GPU. Qwen3 14B is hidden automatically on CPU.
 - **`gradio.live` link unavailable:** check that the final cell completed and
   keep the Colab runtime connected. The URL expires when the runtime stops.
+- **No link appears after about a minute:** the final cell returns with the
+  latest launcher log. Rerun it to check startup again; it reuses the running
+  process rather than starting a duplicate.
 - **Model load fails:** inspect the final cell output for the `llama-server`
   log and verify that the assigned runtime has enough RAM/VRAM.
 
