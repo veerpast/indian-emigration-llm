@@ -8,8 +8,8 @@ The project deliberately separates four layers:
    complete.
 2. **LoRA adapters** — stored locally/Drive; weight binaries are excluded from
    Git.
-3. **Canonical Colab notebook** — merges each adapter into its exact base model,
-   converts to FP16 GGUF, then quantizes to `Q4_K_M`.
+3. **Canonical Colab notebook** — demo-only inference over the three existing
+   Drive GGUF files; it does not merge adapters or convert/quantize models.
 4. **Presentation site** — explains the verified pipeline and links to the
    runnable notebook/repository; it does not pretend to host 18+ GB of models.
 
@@ -32,15 +32,14 @@ generation parameters
 
 ## Canonical execution
 
-1. Upload adapters to `My Drive/Research Project/models_for_drive/`.
-2. Open `notebooks/Final_LLM_Pipeline.ipynb` in Colab.
-3. Mount Drive and run the environment audit.
-4. Run the model registry cell and verify paths/base repositories.
-5. Run toolchain setup.
-6. Run streamed shard merge and `Q4_K_M` quantization.
-7. Verify output byte size and compute SHA-256.
-8. Run the Gradio/`llama-server` interface.
-9. Export machine-readable benchmark results before interpreting them.
+1. Open `notebooks/Final_LLM_Pipeline.ipynb` in Colab and choose a free T4 GPU
+   if one is available; CPU fallback is supported but slow.
+2. Run the Drive verification cell and confirm the three expected GGUFs are
+   present in `My Drive/Research Project/gguf/`.
+3. Run the inference-runtime setup cell, then the Gradio/`llama-server` demo.
+4. Record the Colab backend and generation settings for each demonstration.
+5. For a reproducible model-conversion experiment, use the separate conversion
+   procedure and record its tool versions, inputs, and output hashes.
 
 ## Split discipline
 
@@ -58,7 +57,7 @@ Claims supported today:
 
 - three named adapters/configurations exist locally;
 - three named Q4_K_M artifacts exist on Drive with verified byte sizes;
-- the notebook implements low-memory shard-wise merging and streaming inference;
+- the notebook verifies the existing Drive artifacts and streams inference;
 - the local corpus has 30,324 structurally valid rows across seven labels.
 
 Claims requiring additional evidence:

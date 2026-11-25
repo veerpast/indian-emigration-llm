@@ -24,8 +24,9 @@ coordinated by **Dr. Tamal Ghosh**.
 - Three LoRA adapter bundles with exact base-model and adapter configuration.
 - Three final GGUF `Q4_K_M` artifacts verified on Google Drive on
   **25 November 2026**.
-- A canonical Colab notebook for low-memory shard-wise LoRA merge,
-  Hugging Face-to-GGUF conversion, quantization, and live streaming inference.
+- A demo-only Colab notebook that loads the three existing Drive GGUF files and
+  provides live streaming inference without downloading base models or converting
+  adapters.
 - A presentation site and a reproducible structural dataset audit.
 
 ## Run the three-model demo in Google Colab
@@ -36,21 +37,25 @@ The final runnable notebook is
 [![Open the final notebook in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/veerpast/indian-emigration-llm/blob/main/notebooks/Final_LLM_Pipeline.ipynb)
 
 1. Open the notebook with the button above.
-2. In Colab, choose **Runtime → Change runtime type → T4 GPU**. The intended
-   accelerator is NVIDIA T4; “T100” is not a standard Colab runtime name.
-3. Run the cells in order and approve the Google Drive mount.
-4. Cell 3 verifies the three exact GGUF files already stored in Drive.
-5. Cell 4 installs a current CUDA-enabled `llama.cpp` build, with an automatic
-   CPU fallback if that binary is incompatible with the assigned runtime.
-6. Cell 5 safely skips GGUF files that are already complete.
-7. Cell 6 stages all three GGUFs on Colab SSD when enough disk is available.
-8. Cell 7 launches the formal Gradio interface and prints a temporary public
-   `gradio.live` URL.
+2. Select **Runtime → Change runtime type → T4 GPU** if Colab offers a free GPU.
+   On CPU-only runtimes, Qwen3 14B is hidden to avoid likely memory exhaustion;
+   Mistral and Granite remain available but may be slow.
+3. Run the three code cells from top to bottom and approve the Drive access
+   prompt. The first cell checks the exact three GGUF files in Drive.
+4. The second installs only `llama-server` and Gradio; it does not merge or
+   quantize models.
+5. The final cell opens a temporary `gradio.live` URL and loads one selected
+   model at a time.
 
-The interface offers Mistral 7B, Granite 3.3 8B, and Qwen3 14B in one dropdown.
-Only the selected model is loaded, so changing the selection unloads the prior
-model before loading the next one. The conversation is cleared on a model
-switch to keep comparative answers separate.
+With a GPU, the interface offers Mistral 7B, Granite 3.3 8B, and Qwen3 14B in
+one dropdown. On CPU-only runtimes it hides Qwen3 14B to avoid likely memory
+exhaustion. Only the selected model is loaded, so changing the selection
+unloads the prior model before loading the next one. The conversation is cleared
+on a model switch to keep comparative answers separate.
+
+Colab's free GPU availability, session duration, and public sharing are not
+guaranteed. Run the notebook interactively during the demo and keep it open;
+the generated link is not a permanent hosted service.
 
 ## System at a glance
 
@@ -197,16 +202,18 @@ with PEFT/LoRA. The durable experimental record consists of:
 - `run_config.json` for Granite and Qwen optimizer/training settings;
 - the resulting `adapter_model.safetensors` files (kept outside Git);
 - tokenizers and chat templates;
-- the project log and canonical conversion notebook.
+- the project log and conversion notes. The final Colab notebook is now
+  inference-only because the three GGUF artifacts already exist in Drive.
 
 A paper-grade rerun should additionally pin the base model revision, dataset
 hash/split manifest, package lock, CUDA/PyTorch versions, HPC allocation,
 training command, wall-clock time, and evaluation outputs. The complete protocol
 is in [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md).
 
-## Colab conversion and quantization
+## Existing GGUF artifacts and demo
 
-Open the canonical notebook:
+The three `Q4_K_M` GGUF files are already stored in Drive. Open the final
+notebook for inference only:
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/veerpast/indian-emigration-llm/blob/main/notebooks/Final_LLM_Pipeline.ipynb)
 
@@ -224,21 +231,9 @@ My Drive/Research Project/
     └── Qwen3-14B-Finetuned-Q4_K_M.gguf
 ```
 
-Then:
-
-1. Choose the Colab **T4 GPU** runtime with sufficient system RAM and disk.
-2. Run the hardware audit and mount Drive.
-3. Confirm each adapter and base repository in the central model registry.
-4. Install the pinned toolchain cell.
-5. Run the shard-wise merge and batch conversion cell. Existing outputs are
-   skipped after a size check.
-6. Stage all three GGUFs on `/content` when the notebook confirms enough free
-   SSD space; otherwise the demo reads them directly from Drive.
-7. Launch the streaming Gradio demo.
-
-The notebook creates an intermediate FP16 GGUF and quantizes it with
-`llama-quantize Q4_K_M`. It dynamically allocates a free local port for
-`llama-server`, avoiding Colab’s internal port collisions.
+Run its three code cells in order: mount and verify Drive, install the inference
+runtime, then launch the chat interface. It reads GGUFs directly from the Drive
+folder and does not create, overwrite, or copy model artifacts.
 
 ## Streaming inference
 
