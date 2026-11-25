@@ -9,9 +9,8 @@ emigration, visa interview, and regulatory question answering with LoRA;
 merging and quantizing them to GGUF `Q4_K_M`; and serving them through
 `llama.cpp` with a streaming Gradio interface.
 
-This is a final-year B.Tech CSE (AI & ML) project at Adamas University by
-**Veerpratap Singh Tomar** and **Piyush Pratap Singh**, coordinated by
-**Dr. Tamal Ghosh**.
+This is a final-year B.Tech CSE (AI & ML) research project at Adamas University,
+coordinated by **Dr. Tamal Ghosh**.
 
 > **Research status:** three of six planned model families are fully represented
 > in the current repository/Drive artifacts. The project does not yet publish a
@@ -348,11 +347,10 @@ Then open `http://localhost:8000`.
   redistribution.
 - Current artifacts prove an engineering pipeline, not comparative superiority.
 
-## Authors and acknowledgement
+## Project acknowledgement
 
-- **Veerpratap Singh Tomar** — B.Tech CSE (AI & ML), Adamas University
-- **Piyush Pratap Singh** — B.Tech CSE (AI & ML), Adamas University
-- **Dr. Tamal Ghosh** — Project Coordinator
+This repository documents the Indian emigration question-answering research
+project conducted at Adamas University and coordinated by **Dr. Tamal Ghosh**.
 
 Please cite the project using [CITATION.cff](CITATION.cff). Source code and
 original documentation are MIT-licensed. Dataset/source-content rights are
