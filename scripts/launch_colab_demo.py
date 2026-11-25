@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# ruff: noqa: BLE001, SIM115, SIM117
+# ruff: noqa: SIM115, SIM117
 """Professional three-model Gradio demo for Google Colab.
 
 Discovers the three verified GGUF artifacts, keeps only one model resident at a
@@ -30,27 +30,19 @@ except ImportError:
 # Runtime and artifact registry ------------------------------------------------
 
 if not os.path.exists("/content/drive/MyDrive"):
-    try:
-        from google.colab import drive
+    from google.colab import drive
 
-        drive.mount("/content/drive")
-    except Exception as exc:
-        print(f"Drive notice: {exc}")
+    drive.mount("/content/drive")
 
 SERVER = "/content/llama-bin/llama-server"
 if not os.path.exists(SERVER):
     raise FileNotFoundError(
-        "llama-server is missing. Run Cell 4 (Engine & Toolchain Setup) before the demo cell."
+        "llama-server is missing. Run the inference-runtime setup cell before the demo."
     )
 
 os.environ["LD_LIBRARY_PATH"] = "/content/llama-bin:" + os.environ.get("LD_LIBRARY_PATH", "")
 
-SEARCH_PATHS = [
-    "/content",
-    "/content/drive/MyDrive/Research Project/gguf",
-    "/content/drive/MyDrive/Research project/gguf",
-    "/content/drive/MyDrive/gguf",
-]
+SEARCH_PATHS = ["/content/drive/MyDrive/Research Project/gguf"]
 
 MODEL_SPECS = {
     "Mistral 7B": {
@@ -103,16 +95,12 @@ def discover_models() -> dict[str, dict[str, object]]:
         raise FileNotFoundError(
             "The demo requires all three verified GGUF files.\n"
             f"Missing:\n{absent}\n\nSearched:\n{searched}\n"
-            "Run Cell 3 to audit Drive paths, then Cell 5 if conversion is incomplete."
+            "Run the notebook's Drive verification cell and confirm the exact folder and filenames."
         )
     return resolved
 
 
 AVAILABLE_MODELS = discover_models()
-MODEL_OPTIONS = list(MODEL_SPECS)
-print("\nVerified GGUF artifacts:")
-for label, spec in AVAILABLE_MODELS.items():
-    print(f"  • {label:<18} {spec['size_gb']:.2f} GB · {spec['location']} · {spec['path']}")
 
 
 # llama-server lifecycle -------------------------------------------------------
@@ -137,6 +125,15 @@ USE_GPU = (
     and BACKEND_MARKER.exists()
     and BACKEND_MARKER.read_text(encoding="utf-8").strip() == "cuda"
 )
+MODEL_OPTIONS = list(AVAILABLE_MODELS)
+if not USE_GPU:
+    MODEL_OPTIONS = [label for label in MODEL_OPTIONS if label != "Qwen3 14B"]
+    print("CPU-only runtime detected; Qwen3 14B is hidden to avoid likely memory exhaustion.")
+
+print("\nVerified GGUF artifacts:")
+for label, spec in AVAILABLE_MODELS.items():
+    print(f"  • {label:<18} {spec['size_gb']:.2f} GB · {spec['location']} · {spec['path']}")
+
 MODEL_LOCK = threading.RLock()
 current_server_proc: subprocess.Popen | None = None
 current_log_handle = None
@@ -177,19 +174,14 @@ def ensure_server(model_label: str, timeout_seconds: int = 300) -> tuple[bool, s
     """Load one selected model. Switching cleanly unloads the previous model."""
     global current_server_proc, current_log_handle, current_loaded_model
     with MODEL_LOCK:
-        if model_label not in AVAILABLE_MODELS:
+        if model_label not in MODEL_OPTIONS:
+            if model_label in AVAILABLE_MODELS:
+                return False, f"{model_label} is unavailable on this CPU-only runtime.", 0.0
             return False, f"Unknown model: {model_label}", 0.0
         if current_loaded_model == model_label and current_server_proc and is_healthy():
             return True, "already loaded", 0.0
 
         stop_server()
-        subprocess.run(
-            ["fuser", "-k", f"{SERVER_PORT}/tcp"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        )
-
         spec = AVAILABLE_MODELS[model_label]
         command = [
             SERVER,

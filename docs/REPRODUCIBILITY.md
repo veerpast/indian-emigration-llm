@@ -37,6 +37,8 @@ generation parameters
 2. Run the Drive verification cell and confirm the three expected GGUFs are
    present in `My Drive/Research Project/gguf/`.
 3. Run the inference-runtime setup cell, then the Gradio/`llama-server` demo.
+   The notebook fetches its launcher from a fixed repository commit so the
+   interface code is not duplicated between the notebook and script.
 4. Record the Colab backend and generation settings for each demonstration.
 5. For a reproducible model-conversion experiment, use the separate conversion
    procedure and record its tool versions, inputs, and output hashes.

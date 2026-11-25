@@ -26,6 +26,13 @@ def clean(text: str) -> str:
     return WHITESPACE_RE.sub(" ", text or "").strip()
 
 
+def ensure_output_available(output: Path, overwrite: bool) -> None:
+    if output.exists() and not overwrite:
+        raise FileExistsError(
+            f"Output file already exists: {output}. Choose another path or pass --overwrite."
+        )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--subreddits", required=True, help="comma-separated approved communities")
@@ -33,6 +40,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=100, choices=range(1, 1001), metavar="1..1000")
     parser.add_argument("--min-score", type=int, default=2)
     parser.add_argument("--output", type=Path, default=Path("data/raw/reddit_authorized.csv"))
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="replace the output file if it already exists",
+    )
     parser.add_argument(
         "--i-have-approval",
         action="store_true",
@@ -48,6 +60,11 @@ def main() -> int:
             "Collection stopped. Obtain Reddit API approval and rightsholder permission, "
             "then re-run with --i-have-approval."
         )
+
+    try:
+        ensure_output_available(args.output, args.overwrite)
+    except FileExistsError as exc:
+        raise SystemExit(str(exc)) from exc
 
     load_dotenv()
     required = ("REDDIT_CLIENT_ID", "REDDIT_CLIENT_SECRET", "REDDIT_USER_AGENT")

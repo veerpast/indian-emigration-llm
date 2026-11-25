@@ -2,7 +2,7 @@
 
 [![Project site](https://img.shields.io/badge/live-project_site-2f6bff)](https://indian-emigration-llm-research.silkenbay32.chatgpt.site)
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/veerpast/indian-emigration-llm/blob/main/notebooks/Final_LLM_Pipeline.ipynb)
-[![Dataset audit](https://github.com/veerpast/indian-emigration-llm/actions/workflows/quality.yml/badge.svg)](https://github.com/veerpast/indian-emigration-llm/actions/workflows/quality.yml)
+[![Quality checks](https://github.com/veerpast/indian-emigration-llm/actions/workflows/quality.yml/badge.svg)](https://github.com/veerpast/indian-emigration-llm/actions/workflows/quality.yml)
 
 An academic pipeline for adapting open-source instruction models to Indian
 emigration, visa interview, and regulatory question answering with LoRA;
@@ -44,8 +44,9 @@ The final runnable notebook is
    prompt. The first cell checks the exact three GGUF files in Drive.
 4. The second installs only `llama-server` and Gradio; it does not merge or
    quantize models.
-5. The final cell opens a temporary `gradio.live` URL and loads one selected
-   model at a time.
+5. The final cell fetches the version-pinned demo launcher from this repository,
+   then opens a temporary `gradio.live` URL and loads one selected model at a
+   time.
 
 With a GPU, the interface offers Mistral 7B, Granite 3.3 8B, and Qwen3 14B in
 one dropdown. On CPU-only runtimes it hides Qwen3 14B to avoid likely memory
@@ -55,13 +56,15 @@ on a model switch to keep comparative answers separate.
 
 Colab's free GPU availability, session duration, and public sharing are not
 guaranteed. Run the notebook interactively during the demo and keep it open;
-the generated link is not a permanent hosted service.
+the generated link is not a permanent hosted service. Anyone with the temporary
+link may be able to access the demo while it is running, so do not enter
+personal or confidential information and stop the runtime after presenting.
 
 ## System at a glance
 
 ```mermaid
 flowchart LR
-    A[Authorized sources] --> B[Clean and de-identify]
+    A[Reddit-derived corpus] --> B[Clean, preprocess, label, review identifiers]
     B --> C[30,324 QA pairs]
     C --> D[College HPC: LoRA SFT]
     D --> E[PEFT adapters]
@@ -135,7 +138,10 @@ python3 scripts/validate_dataset.py indian_emigration_qa_purified.csv --json
 
 The audit checks schema, empty fields, duplicates, source counts, and possible
 contact-detail patterns for manual review. It does not certify factual accuracy
-or permission to use the text.
+or permission to use the text. The latest local audit flagged **9 possible
+phone-number rows** and **0 possible email rows**; these are pattern matches,
+not confirmed personal data. Manually review and redact/remove candidates before
+any dataset release or broader use.
 
 ## Collecting Reddit data responsibly
 
@@ -167,6 +173,9 @@ Therefore, “publicly visible” does not mean “free to train on.” Before c
    be honored; do not publish usernames.
 8. Review the resulting dataset and license with the project supervisor before
    training or release.
+
+The collector refuses to overwrite an existing output file unless
+`--overwrite` is explicitly supplied.
 
 ### Authorized collector setup
 
@@ -202,8 +211,9 @@ with PEFT/LoRA. The durable experimental record consists of:
 - `run_config.json` for Granite and Qwen optimizer/training settings;
 - the resulting `adapter_model.safetensors` files (kept outside Git);
 - tokenizers and chat templates;
-- the project log and conversion notes. The final Colab notebook is now
-  inference-only because the three GGUF artifacts already exist in Drive.
+- local project logs and conversion notes, which are excluded from the public
+  source tree. The final Colab notebook is inference-only because the three
+  GGUF artifacts already exist in Drive.
 
 A paper-grade rerun should additionally pin the base model revision, dataset
 hash/split manifest, package lock, CUDA/PyTorch versions, HPC allocation,
@@ -237,9 +247,10 @@ folder and does not create, overwrite, or copy model artifacts.
 
 ## Streaming inference
 
-`scripts/launch_colab_demo.py` discovers GGUF files in common Drive locations,
-loads one model at a time with `llama-server`, waits on `/health`, and streams
-the OpenAI-compatible `/v1/chat/completions` response into Gradio.
+`scripts/launch_colab_demo.py` looks for the three exact GGUF filenames in the
+canonical Drive folder, loads one model at a time with `llama-server`, waits on
+`/health`, and streams the OpenAI-compatible `/v1/chat/completions` response
+into Gradio. On CPU-only runtimes it hides Qwen3 14B.
 
 Recommended demonstration settings:
 
@@ -303,11 +314,10 @@ analysis. Avoid treating lexical overlap as factual correctness.
 │   ├── DATA_CARD.md
 │   ├── MODEL_CARD.md
 │   ├── REPRODUCIBILITY.md
-│   └── research/                 # historical engineering notes
+│   └── workflow_guide.md
 ├── models_for_drive/             # configs/tokenizers; weights ignored by Git
 ├── notebooks/
-│   ├── Final_LLM_Pipeline.ipynb # canonical Colab workflow
-│   └── archive/                  # earlier working notebooks
+│   └── Final_LLM_Pipeline.ipynb # canonical Colab workflow
 ├── scripts/
 │   ├── convert_to_gguf.sh
 │   ├── launch_colab_demo.py

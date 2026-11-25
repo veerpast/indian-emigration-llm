@@ -33,7 +33,7 @@
       <div class="hero-copy">
         <p class="kicker">Adamas University · Final-year research</p>
         <h1>Three open models. One Indian emigration corpus.</h1>
-        <p class="hero-lede">A reproducible route from 30,324 Indian emigration Q&amp;A pairs to LoRA adapters, quantized GGUF artifacts, and streaming inference—built across college HPC and Google Colab.</p>
+        <p class="hero-lede">A research workflow documenting 30,324 Reddit-derived Q&amp;A pairs, LoRA adapter training on college HPC, existing quantized GGUF artifacts, and live inference in Colab.</p>
         <div class="hero-actions">
           <a class="button primary" href="https://colab.research.google.com/github/veerpast/indian-emigration-llm/blob/main/notebooks/Final_LLM_Pipeline.ipynb" target="_blank" rel="noreferrer">Run in Colab</a>
           <a class="button secondary" href="https://github.com/veerpast/indian-emigration-llm" target="_blank" rel="noreferrer">Read the repository</a>
@@ -79,12 +79,12 @@
       <div class="section-heading">
         <p class="kicker">The engineering route</p>
         <h2>Each constraint shaped the system.</h2>
-        <p>HPC handled adaptation. Colab handled merging and quantization. The local machine only needs a browser.</p>
+        <p>HPC handled adaptation; existing artifacts were merged and quantized in Colab. The current notebook is inference-only, so the local machine needs only a browser.</p>
       </div>
       <ol class="pipeline-list">
         <li>
           <span class="stage">Source</span>
-          <div><h3>Scrape, clean, and audit</h3><p>Collect approved Reddit data, pre-process it, scan identifiers, deduplicate, and freeze leakage-controlled splits.</p></div>
+          <div><h3>Document, clean, and audit</h3><p>Record permissions and provenance, preprocess Reddit-derived data, scan identifiers, deduplicate, and freeze leakage-controlled splits.</p></div>
           <span class="stage-output">CSV + manifest</span>
         </li>
         <li>
@@ -159,7 +159,7 @@
         <aside class="integrity-callout">
           <span class="stamp">Release gate</span>
           <h3>The full corpus is not public yet.</h3>
-          <p>Row-level provenance, rightsholder permissions, privacy review, and takedown handling must be complete before redistribution.</p>
+          <p>Row-level provenance, rightsholder permissions, privacy review, and takedown handling must be complete before redistribution. The latest local scan flagged 9 possible phone-pattern rows for private manual review; these are not confirmed identifiers.</p>
           <a href="https://github.com/veerpast/indian-emigration-llm/blob/main/docs/DATA_CARD.md" target="_blank" rel="noreferrer">Read the dataset card</a>
         </aside>
       </div>

@@ -1,4 +1,5 @@
 .DS_Store
+.ruff_cache/
 .env
 .env.*
 !.env.example
@@ -29,4 +30,10 @@ output/
 # Notebook checkpoints and generated reports
 .ipynb_checkpoints/
 reports/*.json
+
+# Local administrative material and superseded notebooks are not part of the
+# public project documentation. Keep originals locally.
+/docs/research/
+/docs/Minor_Project_Abstract_Final.pdf
+/notebooks/archive/
 

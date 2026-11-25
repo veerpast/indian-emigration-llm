@@ -1,5 +1,7 @@
 import csv
 
+import pytest
+
 from scripts.validate_dataset import audit
 
 
@@ -46,4 +48,12 @@ def test_audit_flags_possible_contact_details(tmp_path):
 
     assert report["possible_email_rows"] == 1
     assert report["possible_phone_rows"] == 1
+
+
+def test_audit_rejects_missing_required_columns(tmp_path):
+    csv_path = tmp_path / "incomplete.csv"
+    csv_path.write_text("question,answer\nQuestion?,Answer.\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="missing required columns: source"):
+        audit(csv_path)
 

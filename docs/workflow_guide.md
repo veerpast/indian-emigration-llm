@@ -21,6 +21,9 @@ base models, merge adapters, or convert/quantize weights.
    URL. Select a model and send a question. Only one model is loaded at a time;
    the first response after a model switch takes longer while it loads.
 
+The final cell downloads the launcher from a fixed repository commit rather
+than embedding a second copy of the interface code in the notebook.
+
 ## Free-runtime notes
 
 Colab's free GPU availability and session duration vary and are not guaranteed.
@@ -28,6 +31,8 @@ Keep the notebook open and use the demo during the live presentation; the
 `gradio.live` URL is temporary, not a permanent public service. If no GPU is
 available, choose Mistral 7B for the most practical CPU fallback. Model outputs
 are research demonstrations, not legal or immigration advice.
+Anyone with the temporary link may be able to access the running demo. Do not
+enter personal or confidential information, and stop the runtime after use.
 
 ## Troubleshooting
 
@@ -39,3 +44,26 @@ are research demonstrations, not legal or immigration advice.
   keep the Colab runtime connected. The URL expires when the runtime stops.
 - **Model load fails:** inspect the final cell output for the `llama-server`
   log and verify that the assigned runtime has enough RAM/VRAM.
+
+## Presentation run-through
+
+Before presenting, open the notebook, confirm Drive access and the exact GGUF
+filenames, run all three cells, and test the temporary link. Keep the notebook
+tab open; the free GPU allocation and sharing link are not guaranteed.
+
+Suggested short introduction:
+
+> This research project studies domain adaptation for Indian emigration
+> question answering. We cleaned and pre-processed a Reddit-derived corpus,
+> fine-tuned three open instruction models with LoRA on college HPC, and
+> prepared quantized GGUF artifacts for lower-resource inference. This Colab
+> demo loads those existing artifacts from Drive. The current evidence confirms
+> the pipeline and artifacts, not which model is best; a controlled evaluation
+> is still required.
+
+For a fair live comparison, ask each selected model the same question, such as
+“What is the difference between ECR and ECNR status?”, and state that answers
+are generated responses rather than verified legal advice. If Colab does not
+provide a usable runtime, present the website's clearly labelled walkthrough
+and explain that it is illustrative, not live model inference. Do not enter
+personal or confidential information into the public temporary link.

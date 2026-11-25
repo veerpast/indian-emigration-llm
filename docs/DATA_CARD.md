@@ -33,6 +33,12 @@ Structural audit results:
 - Mean answer length: 375.0 characters.
 - Longest question: 618 characters.
 - Longest answer: 5,630 characters.
+- Possible phone-pattern matches: 9 rows (manual review required).
+- Possible email-pattern matches: 0 rows.
+
+Phone-pattern matches are heuristic flags, not confirmed identifiers. Review the
+candidate rows locally and redact or remove any direct identifiers before
+training, demonstration, or release. The raw rows are not reproduced here.
 
 These measurements establish structure, not truthfulness or legal accuracy.
 
